@@ -1,7 +1,12 @@
-﻿namespace UTruckinServiceApp.Models
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace UTruckinServiceApp.Models
 {
     public class VehicleResponse
     {
-        public List<Content> Content { get; set; }
+        public Result Result { get; set; }           
+        public List<Content> Content { get; set; }   
+        public Pageable Pageable { get; set; }
     }
 }
+

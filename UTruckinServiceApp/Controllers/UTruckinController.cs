@@ -5,22 +5,30 @@ using UTruckinServiceApp.Services;
 namespace UTruckinServiceApp.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/utruckin")]
     public class UTruckinController : ControllerBase
     {
-        private readonly IUTruckinService utruckinService;
+        private readonly IUtruckinService utruckinService;
 
-        public UTruckinController(IUTruckinService utruckinService)
+        public UTruckinController(IUtruckinService utruckinService)
         {
             this.utruckinService = utruckinService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Content>>> GetVehicles()
+        [HttpGet("get-all-orders")]
+        public async Task<ActionResult<List<Content>>> GetVehicles([FromQuery] int? count)
         {
             var vehicles = await utruckinService.GetVehiclesWithPositionAsync();
+            var total = vehicles.Count;
 
-            return Ok(vehicles);
+            if (count.HasValue && count.Value > 0)
+                vehicles = vehicles.Take(count.Value).ToList();
+
+            return Ok(new
+            {
+                total,
+                vehicles
+            });
         }
     }
 }

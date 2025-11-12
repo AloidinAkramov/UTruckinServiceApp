@@ -5,7 +5,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddHttpClient<IUTruckinService, UTruckinService>();
+builder.Services.AddHttpClient<IUtruckinService, UtruckinService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

@@ -1,31 +1,35 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Net.Http;
+using System.Text.Json;
 using UTruckinServiceApp.Models;
 namespace UTruckinServiceApp.Services
 {
-    public class UTruckinService : IUTruckinService
+    public class UtruckinService : IUtruckinService
     {
         private readonly HttpClient httpClient;
+        private readonly IConfiguration configuration;
 
-        public UTruckinService(HttpClient httpClient)
+        public UtruckinService(HttpClient httpClient, IConfiguration configuration)
         {
             this.httpClient = httpClient;
+            this.configuration = configuration;
         }
 
         public async Task<List<Content>> GetVehiclesWithPositionAsync()
         {
-            string apiKey = "27a9a6fa4b491c600dff04417931369763355bb3cfe65c5825528079da44dd77";
-
-            httpClient.DefaultRequestHeaders.Add("x-api-key", apiKey);
-
-            var url = "https://api.utruckin.com/logger/third-part-user/vehicles/present?page=0&size=10";
-            var response = await httpClient.GetAsync(url);
+            string baseUrl = configuration["ApiSettings:BaseUrl"];
+            string apiKey = configuration["ApiSettings:ApiKey"];
 
 
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+            var response = await httpClient.GetAsync(baseUrl);
             var json = await response.Content.ReadAsStringAsync();
 
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var data = JsonSerializer.Deserialize<VehicleResponse>(json, options);
-
+         
             return data.Content;
         }
     }

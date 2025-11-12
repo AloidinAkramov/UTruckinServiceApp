@@ -16,19 +16,12 @@ namespace UTruckinServiceApp.Controllers
         }
 
         [HttpGet("get-all-orders")]
-        public async Task<ActionResult<List<Content>>> GetVehicles([FromQuery] int? count)
+        public async Task<ActionResult<List<Content>>> GetVehicles(
+            [FromQuery] int page = 0,
+            [FromQuery] int size = 10)
         {
-            var vehicles = await utruckinService.GetVehiclesWithPositionAsync();
-            var total = vehicles.Count;
-
-            if (count.HasValue && count.Value > 0)
-                vehicles = vehicles.Take(count.Value).ToList();
-
-            return Ok(new
-            {
-                total,
-                vehicles
-            });
+            var vehicles = await utruckinService.GetVehiclesWithPositionAsync(page, size);
+            return Ok(vehicles);
         }
     }
 }
